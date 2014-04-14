@@ -1,4 +1,11 @@
 #!/bin/bash
+
+if  which vim
+then echo "found vim"
+else
+sudo apt-get install vim-gnome
+fi
+
 #change to home directory and clone repo
 cd ~
 git clone https://jayanthram_kv@bitbucket.org/jayanthram_kv/dotvim.git ~/.vim
