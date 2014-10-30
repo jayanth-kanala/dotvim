@@ -1,14 +1,23 @@
 #!/bin/bash
 
-if  which vim
-then echo "found vim"
+# check if git is installed
+if [ ! "$type $git" >  /dev/null ]; then
+  # install foobar here
+  sudo apt-get install git
+else 
+	echo "git is installed"
+fi
+
+if [ ! "$type $vim" > /dev/null ]; then
+	sudo apt-get install vim-gnome
 else
-sudo apt-get install vim-gnome
+	echo "vim is installed."
 fi
 
 #change to home directory and clone repo
 cd ~
-git clone git@bitbucket.org:jayanthram_kv/dotvim.git ~/.vim
+#clone the .vim repo
+git clone https://jayanthram_kv@bitbucket.org/jayanthram_kv/dotvim.git ~/.vim
 
 # add symlinks
 ln -s ~/.vim/vimrc ~/.vimrc
