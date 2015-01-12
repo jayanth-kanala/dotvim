@@ -1,17 +1,19 @@
-
-
+"
 " An example for a vimrc file.
 "
 " Maintainer:	Jayanth Ram (jayanthram1991@gmail.com)
-" Last change:  March 18,2014	
+" Last change:	January 12,2015
 "
 " To use it, copy it to
+"
 "     for Unix and OS/2:  ~/.vimrc
 "	      for Amiga:  s:.vimrc
 "  for MS-DOS and Win32:  $VIM\_vimrc
 "	    for OpenVMS:  sys$login:.vimrc
+"
 
 " When started as "evim", evim.vim will already have done these settings.
+
 if v:progname =~? "evim"
 	finish
 endif
@@ -26,17 +28,32 @@ set backspace=indent,eol,start
 " start pathogen
 execute pathogen#infect()
 
-set history=1000	" keep 50 lines of command line history
-set ruler		" show the cursor position all the time
-set showcmd		" display incomplete commands
-set incsearch		" do incremental searching
 set number		" set line number
+set ruler		" show the cursor position all the time
+set history=1000	" keep 1000 lines of command line history
+set incsearch		" do incremental searching
+set showcmd		" display incomplete commands
 set noswapfile		" set no swapfiles
 set nobackup		" do not keep a backup file, use versions instead
-
+set autowriteall	" Will save buffer when switching to other
 set t_Co=256		" Enable 256 color
-syntax enable		" syntax enable
-let g:solarized_termcolors=256
+
+"set hlsearch
+
+"Invisible character colors
+set listchars=tab:▸\ ,eol:¬
+highlight NonText guifg=#4a4a59
+highlight SpecialKey guifg=#4a4a59
+
+" Shortcuts
+nmap <leader>l :set list!<CR> 	" shortcut to toggle listchars
+nmap <leader>s :update<CR> 	" shortcut to update buffer (save file)
+
+syntax enable		" syntax enable highlight
+
+" solarized theme color settings
+
+let g:solarized_termcolors=256 " important for terminal users
 colorscheme solarized
 if has('gui_running')
 	set background=light
@@ -50,7 +67,7 @@ endif
 " Don't use Ex mode, use Q for formatting
 map Q gq
 
-" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" CTRL-U in insert mode deletes a lot.	Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
@@ -63,10 +80,25 @@ endif
 " Also switch on highlighting the last used search pattern.
 if &t_Co > 2 || has("gui_running")
 	syntax on
-"	set hlsearch
 endif
 
+" Functions
+
+" Preserve cursor position after executing command
+function! <SID>Preserve(command)
+	" Preparation: save last search, and cursor position.
+	let _s=@/
+	let l = line(".")
+	let c = col(".")
+	" Run the command:
+	execute a:command
+	" Clean up: restore previous search history, and cursor position
+	let @/=_s
+	call cursor(l, c)
+endfunction
+
 " Only do this part when compiled with support for autocommands.
+
 if has("autocmd")
 
 	" Enable file type detection.
@@ -75,13 +107,23 @@ if has("autocmd")
 	" Also load indent files, to automatically do language-dependent indenting.
 	filetype plugin indent on
 
-	autocmd bufwritepost .vimrc source $MYVIMRC
+	" Update .vimrc on the fly
+	autocmd BufWritePost .vimrc source $MYVIMRC
+
+	" Preseve cursor postion
+	" Remove trailing whitespace
+	" Remove blank lines
+	" Indent code
+	autocmd BufWritePre * :call <SID>Preserve("%s/\\s\\+$//e")
+	autocmd BufWritePre * :call <SID>Preserve("normal gg=G")
+
 	" Put these in an autocmd group, so that we can delete them easily.
 	augroup vimrcEx
 		au!
-
 		" For all text files set 'textwidth' to 78 characters.
-		autocmd FileType text setlocal textwidth=78
+		autocmd FileType text setlocal textwidth=80
+		autocmd BufEnter * highlight OverLength ctermbg=darkgrey guibg=#592929
+		autocmd BufEnter * match OverLength /\%80v/
 
 		" When editing a file, always jump to the last known cursor position.
 		" Don't do it when the position is invalid or when inside an event handler
@@ -92,11 +134,8 @@ if has("autocmd")
 					\ if line("'\"") > 1 && line("'\"") <= line("$") |
 					\   exe "normal! g`\"" |
 					\ endif
-
 	augroup END
-
 else
-
 	set autoindent		" always set autoindenting on
 
 endif " has("autocmd")
