@@ -1,17 +1,15 @@
 #!/bin/bash
 
 # check if git is installed
-if [ ! "$type $git" >  /dev/null ]; then
-  # install foobar here
-  sudo apt-get install git
-else 
-	echo "git is installed"
-fi
-
-if [ ! "$type $vim" > /dev/null ]; then
-	sudo apt-get install vim-gnome
+if type git 2>/dev/null >/dev/null; then
+	echo "Git installed"
 else
-	echo "vim is installed."
+	echo "Git not installed"
+fi
+if type vim 2>/dev/null >/dev/null; then
+	echo "Vim installed"
+else
+	echo "Vim not installed"
 fi
 
 #change to home directory and clone repo
