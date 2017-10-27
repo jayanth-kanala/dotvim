@@ -37,6 +37,8 @@ set noswapfile		" set no swapfiles
 set nobackup		" do not keep a backup file, use versions instead
 set autowriteall	" Will save buffer when switching to other
 set t_Co=256		" Enable 256 color
+"remap <Esc> to jj in insert mode
+imap jj <Esc>
 
 "set hlsearch
 
