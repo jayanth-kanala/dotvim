@@ -1,6 +1,6 @@
 #change to home directory and clone repo
 cd ~
-git clone https://jayanthram_kv@bitbucket.org/jayanthram_kv/dotvim.git ~/.vim
+git clone git@github.com:jayanthramkv/dotvim.git ~/.vim
 
 # add symlinks
 ln -s ~/.vim/vimrc ~/.vimrc
